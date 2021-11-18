@@ -6,7 +6,7 @@
 #
 # Ocena 4.0
 # DONE - Ciagi 2 1 4 1 1 1 5 1 zamienic na znaki - uwaga znaki niewidoczne i wyjatki
-# Wyjateki -> Zabezpieczyc i rozbic  
+# Wyjateki -> Zabezpieczyc i rozbic liczby > 255 w ciagu
 #
 # Ocena 3.0
 # DONE - Odczytac string do zamiany
@@ -69,17 +69,6 @@ def toBinaryString(asciiString):
     return string8Bit
 
 
-# splits values > 255 to string which enables to convert it to char string
-def splitValue(value):
-    MAX_VALUE = 255
-    splitedString = "255"
-    c = 0
-    while(value >= MAX_VALUE):
-        value = value - MAX_VALUE
-        splitedString += " 0 " + str(value)
-    return splitedString
-
-
 # convert bits string to string of signs basis on counting 1/0  
 def bitsToHiddenCode(bitsString):
     hiddenCode = ""
@@ -99,6 +88,33 @@ def bitsToHiddenCode(bitsString):
     return hiddenCode
 
 
+# splits values > 255 to string which enables to convert it to char string.  example: 700 -> 255 0 255 0 190
+def splitValue(value):
+    splitedString = value
+    if value > 255:
+        MAX_VALUE = 255
+        splitedString = "255"
+        c = 0
+        while(value >= MAX_VALUE):
+            value = value - MAX_VALUE
+            splitedString += " 0 " + str(value)
+    return str(splitedString)
+
+
+# Check valueString to find values > 255, if value > 255 find splitValue method is run to split value
+def checkValueString(valuesString):
+    checkedValueString = ""
+    partialString = ""
+    for e in valuesString:
+        if  e != " ":
+            partialString += e
+        if e == " ":
+            partialString = splitValue(int(partialString))
+            checkedValueString += partialString + " " 
+            partialString = "" # set to base                  
+    return checkedValueString
+
+
 # Convert hidden code to chars 
 def hiddenToChars(hiddenString):
     hiddenChars = ""
@@ -109,35 +125,48 @@ def hiddenToChars(hiddenString):
 
 
 # Read string from user
-#string = input("Podaj string do zamiany: ")
+string = input("Podaj string do zamiany: ")
 
-# Covertion from string of chars to ASCII string 
+# Coverting from string of chars to ASCII string  
 asciiString = toAsciiString(string)
 print(f"ASCII: {asciiString}")
 
-# Convertion from ASCII string to 8bits 
+# Converting from ASCII string to 8bits 
 bitString = toBinaryString(asciiString)
 print(f"8bits: {bitString}")
 
-# Conversion from 8bits string to string of signs basis on counting 0 or 1 (bits)
-signsString = bitsToHiddenCode(bitString)
-print(f"Hidden code: {signsString}")
+# Converting from 8bits string to string of values basis on counting 0 or 1 (bits)
+valuesString = bitsToHiddenCode(bitString)
+print(f"Hidden code: {valuesString}")
 
-# Covert hidden code to chars 
-charsString = hiddenToChars(signsString)
-print(f"Hidden converted to chars : {charsString}")
+# Checking valueString to find values > 255, split such a values and separating them by 0,  example: 700 -> 255 0 255 0 190
+valuesAfterCheckValueString= checkValueString(valuesString)
+print(f"Hidden code check if > 255. If needed spliting values > 255. result: {valuesAfterCheckValueString}")
 
-#SplitIt test
-c = splitValue(700)
-print(c)
+# Coverting hidden code to chars 
+charsString = hiddenToChars(valuesString)
+print(f"Hidden code converted to chars : {charsString}")
+
+# Summary
+print("")
+print("SUMMARY:")
+print("String to coversion:", string)
+print("String after conversion: ", charsString)
 
 
-"""
-# --- TESTY ---
-# T E S T Y - tablica z digitami
-def test_generowanej_tablicy_z_digitami():
-    assert digit_generator(5) == ['0', '1', '2', '3', '4']
-    assert digit_generator(13) == ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C']
+# TESTS
+print("")
+print("")
+print("String test with values > 255")
+# Check valuesString text
+probe = "2 3 4 8 500 1 8 700 "
+res = checkValueString(probe)
+print(f"Probe string: {probe}")
+print("result: ", res)
 
-test_generowanej_tablicy_z_digitami()
-"""
+# Check valuesString text
+probe = "2 3 4 8 500 1 8 700 "
+res = checkValueString(probe)
+print(f"Probe string: {probe}")
+print("result: ", res)
+
