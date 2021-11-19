@@ -1,6 +1,12 @@
 # Lab3 Zadanie 2 wersja na 5 !!
 
-
+# KODOWANIE DLUGOSCI SERII - ROZBUDOWANE (5.0)
+# ToDo:
+# wrtosc ciagu 1, 2 ,3 700, 20, 30 , 500 zapisac dynamicznie w zaleznosci od max artosci ciagu : np 700 zapiszemy na 10 bitach
+#           DONE - okreslic jaka max wartosc ma ciag 
+#           DONE - wyznaczyc na ilu bitach nalezy to zapisac
+#           - usunac funkcje rozbijania wartosci tak, by przypadkiem nie rozbic > 255
+#           - przerobic funkcje gdzie generowany jest ciag wartosci by jej parametrem byl string oraz juz wyznaczona wartosc bitowego zapisu.
 
 
 
@@ -14,6 +20,34 @@ def toAsciiString(string):
     for e in string:
         stringASCII += str(ord(e)) + " " 
     return stringASCII
+
+
+# Calculate bits needed to describe value in binary system
+def calculateBitsNeededToDescribeValue(value):
+    bits = 1
+    counter = 1
+    bitsSum = 0
+    while(bitsSum < value):
+        counter *= 2 
+        bitsSum += counter 
+        bits += 1
+
+    return bits
+
+# Extract max value from string
+def extractMaxValueFromString(stringAscii):
+    char = ""
+    maxValue = 0
+    value = 0
+    for i in stringAscii:
+        char += i 
+        if(i == " "):
+            # Tutaj wyznaczyc ile bitow jest potrzebne
+            value = int(char)
+            if(value > maxValue):
+                maxValue = value
+            char = ""
+    return maxValue
 
 
 # Change int value to 8bits value
@@ -111,6 +145,18 @@ def hiddenToChars(hiddenString):
     return hiddenChars
 
 
+
+# TESTY NOWEJ FUNKCJONALNOSCI:
+
+# Test sprawdzania ile bitow jest potrzebnych do opisania max wartosci w stringu
+bitString = "1 2 3 700 5 20"
+maxValue = extractMaxValueFromString(bitString)
+print(maxValue)
+
+bits = calculateBitsNeededToDescribeValue(700)
+print(bits)
+
+"""
 # Read string from user
 string = input("Podaj string do zamiany: ")
 
@@ -157,3 +203,4 @@ res = checkValueString(probe)
 print(f"Probe string: {probe}")
 print("result: ", res)
 
+"""
