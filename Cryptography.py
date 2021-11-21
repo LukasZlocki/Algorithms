@@ -1,24 +1,15 @@
-# Lab3 Zadanie 2
+# LZ nr indeksu: 76103
 
+# KODOWANIE DLUGOSCI SERII - STANDARD (Ocena 4.0)
 
-# Story :
-# Ocena 5.0 
-#
-# Ocena 4.0
-# DONE - Ciagi 2 1 4 1 1 1 5 1 zamienic na znaki - uwaga znaki niewidoczne i wyjatki
-# Wyjateki -> Zabezpieczyc i rozbic liczby > 255 w ciagu
-#
-# Ocena 3.0
-# DONE - Odczytac string do zamiany
-# DONE - String na ciag liczb ASCII ze spacjami
-# DONE - Kazda z liczb zamieniamy na wartosc 8bit binarna i zapisujemy do ciagu ze spacjami 
-# DONE - Ciag 8bit zamieniamy na informcje o kolejnych dlugosciach ciagow znakow (0 lub 1) np 2 1 3 1 1 1 5 1 1 1 4 1 2 1 1 1 1 1 1 (bez spacji)
-
-
-
-
-
-string = "!AB*"
+# STEPS :
+# Read string from user
+# Coverting from string of chars to ASCII string  
+# Converting from ASCII string to 8bits 
+# Converting from 8bits string to string of values basis on counting 0 or 1 (bits)
+# Checking valueString to find values > 255, split such a values and separating them by 0,  example: 700 -> 255 0 255 0 190
+# Coverting hidden code to chars 
+# Some tests of strings ex. 2 3 4 8 500 1 8 700 
 
 
 # change string to ASCII values string
@@ -125,7 +116,7 @@ def hiddenToChars(hiddenString):
 
 
 # Read string from user
-string = input("Podaj string do zamiany: ")
+string = input("Type string to encryption: ")
 
 # Coverting from string of chars to ASCII string  
 asciiString = toAsciiString(string)
@@ -156,7 +147,7 @@ print("String after conversion: ", charsString)
 
 # TESTS
 print("")
-print("")
+print("string TESTS ex: 2 3 4 8 500 1 8 700 ")
 print("String test with values > 255")
 # Check valuesString text
 probe = "2 3 4 8 500 1 8 700 "
