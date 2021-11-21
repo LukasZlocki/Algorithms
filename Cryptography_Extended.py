@@ -1,21 +1,19 @@
-# Lab3 Zadanie 2 wersja na 5 !!
+# LZ nr indeksu: 76103
 
-# KODOWANIE DLUGOSCI SERII - ROZBUDOWANE (5.0)
-# ToDo:
-# wrtosc ciagu 1, 2 ,3 700, 20, 30 , 500 zapisac dynamicznie w zaleznosci od max artosci ciagu : np 700 zapiszemy na 10 bitach
-#           DONE - okreslic jaka max wartosc ma ciag 
-#           DONE - wyznaczyc na ilu bitach nalezy to zapisac
-#           - usunac funkcje rozbijania wartosci tak, by przypadkiem nie rozbic > 255
-#           - przerobic funkcje gdzie generowany jest ciag wartosci by jej parametrem byl string oraz juz wyznaczona wartosc bitowego zapisu.
+# KODOWANIE DLUGOSCI SERII - ROZBUDOWANE (Ocena 5.0)
 
-
-
-
-string = "!AB*"
+# STEPS :
+# Read string from user
+# Converting from string of chars to ASCII string  
+# Determining max value from string , ex max = 700
+# Checking how meny bits needed to cover max int value
+# kodowanie calego lancucha na postac binary w zaleznosci od tego ile bitow potrzeba by wyrazic liczbe
+# Converting by counting 0 or 1 (bits)
+# Coverting bits string to chars string 
 
 
 # change string to ASCII values string
-def toAsciiString(string):
+def toAsciiIntString(string):
     stringASCII =""
     for e in string:
         stringASCII += str(ord(e)) + " " 
@@ -34,6 +32,7 @@ def calculateBitsNeededToDescribeValue(value):
 
     return bits
 
+
 # Extract max value from string
 def extractMaxValueFromString(stringAscii):
     char = ""
@@ -50,12 +49,14 @@ def extractMaxValueFromString(stringAscii):
     return maxValue
 
 
-# Change int value to 8bits value
-def intTo8Bits(intChar):
+# Change int value to binary value depending on how many bits is needed
+# intChar : char given by int (ASCII)
+# bitsQuantity : quantity of bits to expressed int(Char) value
+def intToBits(intChar, bitsQuantity):
     binary = []
     binaryString = ""
     bitCounter = 0
-    bitCounter_Counter = 8
+    bitCounter_Counter = bitsQuantity
 
     while (intChar > 0):
         d = intChar % 2
@@ -78,16 +79,18 @@ def intTo8Bits(intChar):
 
 
 # Convert string with ints to string with 8bits digits which represents given int string
-def toBinaryString(asciiString):
-    string8Bit = ""
+# asciiString : string with ASCII signs
+# bitsQuantity : quantity of bits to expressed int(Char) value
+def toBinaryString(asciiString, bitsQuantity):
+    stringBits = ""
     intChar = ""
     for i in asciiString:
         intChar += i 
         if(i == " "):
-            bitValue = intTo8Bits(int(intChar))
-            string8Bit += bitValue + " "
+            bitsValue = intToBits(int(intChar), bitsQuantity)
+            stringBits += bitsValue + " "
             intChar = ""
-    return string8Bit
+    return stringBits
 
 
 # convert bits string to string of signs basis on counting 1/0  
@@ -109,33 +112,6 @@ def bitsToHiddenCode(bitsString):
     return hiddenCode
 
 
-# splits values > 255 to string which enables to convert it to char string.  example: 700 -> 255 0 255 0 190
-def splitValue(value):
-    splitedString = value
-    if value > 255:
-        MAX_VALUE = 255
-        splitedString = "255"
-        c = 0
-        while(value >= MAX_VALUE):
-            value = value - MAX_VALUE
-            splitedString += " 0 " + str(value)
-    return str(splitedString)
-
-
-# Check valueString to find values > 255, if value > 255 find splitValue method is run to split value
-def checkValueString(valuesString):
-    checkedValueString = ""
-    partialString = ""
-    for e in valuesString:
-        if  e != " ":
-            partialString += e
-        if e == " ":
-            partialString = splitValue(int(partialString))
-            checkedValueString += partialString + " " 
-            partialString = "" # set to base                  
-    return checkedValueString
-
-
 # Convert hidden code to chars 
 def hiddenToChars(hiddenString):
     hiddenChars = ""
@@ -145,62 +121,33 @@ def hiddenToChars(hiddenString):
     return hiddenChars
 
 
+# MAIN PROGRAM
 
-# TESTY NOWEJ FUNKCJONALNOSCI:
+bitsNeeded = 0 # Value for calculation of bits needed to cover max int value
 
-# Test sprawdzania ile bitow jest potrzebnych do opisania max wartosci w stringu
-bitString = "1 2 3 700 5 20"
-maxValue = extractMaxValueFromString(bitString)
-print(maxValue)
-
-bits = calculateBitsNeededToDescribeValue(700)
-print(bits)
-
-"""
 # Read string from user
-string = input("Podaj string do zamiany: ")
+string = input("Type string to encryption: ")
 
 # Coverting from string of chars to ASCII string  
-asciiString = toAsciiString(string)
-print(f"ASCII: {asciiString}")
+asciiIntString = toAsciiIntString(string)
+print(f"ASCII reflected by int: {asciiIntString}")
 
-# Converting from ASCII string to 8bits 
-bitString = toBinaryString(asciiString)
-print(f"8bits: {bitString}")
+# Determining max value from string , ex max = 700
+maxValue = extractMaxValueFromString(asciiIntString)
+print(f"Max value in ascii int string: {maxValue}")
 
-# Converting from 8bits string to string of values basis on counting 0 or 1 (bits)
-valuesString = bitsToHiddenCode(bitString)
-print(f"Hidden code: {valuesString}")
+# Checking how meny bits needed to cover max int value
+bitsQuantity = calculateBitsNeededToDescribeValue(maxValue)
+print(f"Bits needed to cover max value: {bitsQuantity}")
 
-# Checking valueString to find values > 255, split such a values and separating them by 0,  example: 700 -> 255 0 255 0 190
-valuesAfterCheckValueString= checkValueString(valuesString)
-print(f"Hidden code check if > 255. If needed spliting values > 255. result: {valuesAfterCheckValueString}")
+# kodowanie calego lancucha na postac binary w zaleznosci od tego ile bitow potrzeba by wyrazic liczbe
+binaryString = toBinaryString(asciiIntString, bitsQuantity)
+print(f"{bitsQuantity} bits string: ", binaryString)
+
+# Converting by counting 0 or 1 (bits)
+valuesString = bitsToHiddenCode(binaryString)
+print(f"coded to bits string: {valuesString}")
 
 # Coverting hidden code to chars 
 charsString = hiddenToChars(valuesString)
-print(f"Hidden code converted to chars : {charsString}")
-
-# Summary
-print("")
-print("SUMMARY:")
-print("String to coversion:", string)
-print("String after conversion: ", charsString)
-
-
-# TESTS
-print("")
-print("")
-print("String test with values > 255")
-# Check valuesString text
-probe = "2 3 4 8 500 1 8 700 "
-res = checkValueString(probe)
-print(f"Probe string: {probe}")
-print("result: ", res)
-
-# Check valuesString text
-probe = "2 3 4 8 500 1 8 700 "
-res = checkValueString(probe)
-print(f"Probe string: {probe}")
-print("result: ", res)
-
-"""
+print(f"Bits string converted to chars : {charsString}")
