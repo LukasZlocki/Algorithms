@@ -38,17 +38,21 @@ string = "AABBABBC" # string to compress
 
 print(f"String to compress: {string}")
 
+# Step 1: Calculations signs quantity
 for el in string:
     L += 1
     position = give_me_int_base_on_char(el)
     update_table(position)
 print(f"Calculated signs quantity L: {L}")
 
+# Step 2: different signs calculation
 X = give_me_table_sum(table)
 print(f"calculated different signs X: {X}")
 
+# Step 3: calculating bits for mask creation
 N = calculating_N_bits_to_create_mask(give_me_table_sum(table))
 print(f"Calculated bits needed to create mask N: {N}")
 
+#Step 4: Dictionary as char
 char = chr(X)
 print(f"char based on different signs quantity : {char}")
