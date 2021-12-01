@@ -28,6 +28,11 @@ def calculating_N_bits_to_create_mask(int_signs_quantity):
     return n
 
 
+def calculating_R_rest_bits(l, n):
+    r = (8 - (l * n +3) %8) %8
+    return r
+
+
 # intChar - char express by int number
 # N - bits numbers needed to create mask of signs
 def dec_to_bin(intChar, N):
@@ -92,5 +97,6 @@ for element in table:
     counter += 1
 print(f"Dictionary: {mappa}")
 
-
 # Step 6: Rest R calculation
+R = calculating_R_rest_bits(L, N)
+print(f"Calculating rest of bits R: {R}")
