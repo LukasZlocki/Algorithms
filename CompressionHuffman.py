@@ -28,11 +28,32 @@ def calculating_N_bits_to_create_mask(int_signs_quantity):
     return n
 
 
+# intChar - char express by int number
+# N - bits numbers needed to create mask of signs
+def dec_to_bin(intChar, N):
+    binary = ""
+    bitCounter = 0
+    bitCounter_Counter = N
+    while (intChar > 0):
+        d = intChar % 2
+        binary += str(d)
+        intChar = intChar // 2
+        bitCounter += 1  # for bit adder purpose
+    # adding bits in order to sustain N bit digit
+    bitLoop = 0
+    bitLoop = bitCounter_Counter - bitCounter 
+    while(bitLoop != 0):
+        binary += "0"
+        bitLoop -= 1
+    binary = binary[::-1]   # binary string reverse
+    return binary
+
 # Main program
 
 L = 0   # signs quantity
 X = 0   # different signs
 N = 0   # bits numbers needed to create mask of signs
+R = 0   # rest result
 
 string = "AABBABBC" # string to compress
 
@@ -53,6 +74,23 @@ print(f"calculated different signs X: {X}")
 N = calculating_N_bits_to_create_mask(give_me_table_sum(table))
 print(f"Calculated bits needed to create mask N: {N}")
 
-#Step 4: Dictionary as char
+# Step 4: Dictionary as char
 char = chr(X)
 print(f"char based on different signs quantity : {char}")
+
+# Step 5: creating dictionary
+counter = 0
+char_counter = 0
+mappa = {}
+for element in table:
+    if element == 1 :
+        char = chr(counter)
+        binary = dec_to_bin(char_counter, N)
+        mappa[char] = binary
+        # map = dict(chr : binary) # Maping char to its binary substitution
+        char_counter += 1
+    counter += 1
+print(f"Dictionary: {mappa}")
+
+
+# Step 6: Rest R calculation
