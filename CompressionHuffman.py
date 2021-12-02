@@ -7,9 +7,12 @@ table = [0 for element in range(127)]
 
 
 def give_me_int_base_on_char(char):
-    int_char = 0
     int_char = ord(char)
     return int_char
+
+def give_me_char_base_on_int(int):
+    char = chr(int)
+    return char
 
 
 def update_table(possition):
@@ -53,6 +56,18 @@ def dec_to_bin(intChar, N):
     binary = binary[::-1]   # binary string reverse
     return binary
 
+
+def bin_to_dec(bin):
+    dec = 0
+    potega = 0
+    for el in bin[::-1]:
+        if (int(el) == 1 ):
+            dec += 2**potega
+        potega += 1
+    return dec
+ 
+ 
+# ******************************************************************************************
 # Main program
 
 L = 0   # signs quantity
@@ -61,6 +76,8 @@ N = 0   # bits numbers needed to create mask of signs
 R = 0   # rest result
 
 string = "AABBABBC" # string to compress
+temporary_string = ""
+output_string = ""
 
 print(f"String to compress: {string}")
 
@@ -100,3 +117,26 @@ print(f"Dictionary: {mappa}")
 # Step 6: Rest R calculation
 R = calculating_R_rest_bits(L, N)
 print(f"Calculating rest of bits R: {R}")
+
+# Step 7: write to temporary string first 3 bits with R value
+temporary_string = dec_to_bin(R, 3)
+print(F"Temporary string: {temporary_string}")    
+
+# Step 8: adding string letters to temporary string base on calculated mask
+batch_string = temporary_string # add R value to begining of string
+bit8_string = ""    # first 8bits
+bit_rest_string = ""    # next bits after 8th bit 
+for element in string:
+    batch_string += mappa[element]
+    a = len(batch_string)
+    if ( a >= 8):
+        bit8_string = batch_string[:8]  # first 8bits
+        bit8_dec = bin_to_dec(bit8_dec)
+        char = give_me_char_base_on_int(bit8_dec)
+        batch_string += char
+        bit_rest_string = batch_string[8:]  # next bits after 8th bit 
+
+    bit8_string = ""    # reset
+    bit_rest_string = ""    # reset
+    batch_string = ""   # reset
+
