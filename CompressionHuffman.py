@@ -6,6 +6,23 @@ import math
 table = [0 for element in range(127)]
 
 
+def read_string_to_compress():
+    file = open("string2Compress.txt","r").readlines()
+    string = ""
+    for element in file:
+        string += element
+    return string
+
+
+def write_string_compressed(string_compressed):
+    with open("stringCompressed.txt", 'w') as file:
+        file.write(string_compressed)
+
+
+def save_dictionary(char):
+    with open("dictionary.txt", 'w') as file:
+            file.write(char)
+
 def give_me_int_base_on_char(char):
     int_char = ord(char)
     return int_char
@@ -38,6 +55,7 @@ def calculating_R_rest_bits(l, n):
 
 # intChar - char express by int number
 # N - bits numbers needed to create mask of signs
+# Dec2Bin
 def dec_to_bin(intChar, N):
     binary = ""
     bitCounter = 0
@@ -57,6 +75,7 @@ def dec_to_bin(intChar, N):
     return binary
 
 
+# Bin2Dec
 def bin_to_dec(bin):
     dec = 0
     potega = 0
@@ -75,10 +94,10 @@ X = 0   # different signs
 N = 0   # bits numbers needed to create mask of signs
 R = 0   # rest result
 
-string = "AABBABBC" # string to compress
 temporary_string = ""
 output_string = ""
 
+string = read_string_to_compress()
 print(f"String to compress: {string}")
 
 # Step 1: Calculations signs quantity
@@ -90,7 +109,7 @@ print(f"Calculated signs quantity L: {L}")
 
 # Step 2: different signs calculation
 X = give_me_table_sum(table)
-print(f"calculated different signs X: {X}")
+print(f"Calculated different signs X: {X}")
 
 # Step 3: calculating bits for mask creation
 N = calculating_N_bits_to_create_mask(give_me_table_sum(table))
@@ -98,6 +117,7 @@ print(f"Calculated bits needed to create mask N: {N}")
 
 # Step 4: Dictionary as char
 char = chr(X)
+save_dictionary(char)
 print(f"char based on different signs quantity : {char}")
 
 # Step 5: creating dictionary
@@ -120,23 +140,62 @@ print(f"Calculating rest of bits R: {R}")
 
 # Step 7: write to temporary string first 3 bits with R value
 temporary_string = dec_to_bin(R, 3)
-print(F"Temporary string: {temporary_string}")    
 
-# Step 8: adding string letters to temporary string base on calculated mask
+# Step 8 / 9 : creating 8 bits string and adding string letters to temporary string base on calculated mask
 batch_string = temporary_string # add R value to begining of string
 bit8_string = ""    # first 8bits
 bit_rest_string = ""    # next bits after 8th bit 
-for element in string:
+batch_string_length = 0    # batch length
+for element in string:  # "AABBABBC" AAB / BABB / C
     batch_string += mappa[element]
-    a = len(batch_string)
-    if ( a >= 8):
-        bit8_string = batch_string[:8]  # first 8bits
-        bit8_dec = bin_to_dec(bit8_dec)
-        char = give_me_char_base_on_int(bit8_dec)
-        batch_string += char
-        bit_rest_string = batch_string[8:]  # next bits after 8th bit 
+    batch_string_length = len(batch_string)
+    if ( batch_string_length >= 8):
+        bit_8_string = batch_string[:8]  # first 8bits
+        rest = batch_string[8:]  # next bits after 8th bit 
 
-    bit8_string = ""    # reset
-    bit_rest_string = ""    # reset
-    batch_string = ""   # reset
+        bit_rest_string += rest  # dodajemy ostatni bit nadprogramowy
+        bit8_string += bit_8_string + " "  # dodajemy 8bitow do stringu glownego
+
+        a = ""  # reset
+        # batch_string = "" + bit_rest_string    # add rest bit and start counting
+        batch_string = rest # adding rest bit to new calculation
+
+if (batch_string_length < 8):   # adding rest bits if last batch of string len < 8
+    bit_8_string = batch_string[:8]  # first 8bits
+    bit_rest_string += "0"
+    bit8_string += bit_8_string
+    # Adding additional R bits to the end of bits string
+    for el in range(R):
+        bit8_string += "1"
+    bit8_string += " "  # final separation sign 
+
+print(f"string 8 bits before compression: {bit8_string}")
+ascii_string = ""
+string = ""
+for e in bit8_string:
+    if (e == " "):
+        dec = bin_to_dec(string)
+        ascii_string += str(dec) + " "
+        string = ""
+    if e != " ": 
+        string += e 
+print(f"8bits to int ASCII signs: {ascii_string}")
+
+print("Transfering to final package version...")
+
+string_coded_assembled = "" # final string assembly
+for e in mappa:
+    string_coded_assembled += str(e)
+string = ""
+for e in bit8_string:
+    if (e == " "):
+        dec = bin_to_dec(string)
+        char = chr(dec)
+        string_coded_assembled += char
+        string = ""
+    if e != " ": 
+        string += e 
+
+print(f"Final package: {string_coded_assembled}")
+write_string_compressed(string_coded_assembled)
 
